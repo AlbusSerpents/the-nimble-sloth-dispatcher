@@ -22,7 +22,6 @@ public class MongoConfig {
             final String username = System.getenv(USERNAME_VARIABLE);
             final String password = System.getenv(PASSWORD_VARIABLE);
             final String uriString = String.format("mongodb://%s:%s@ds129914.mlab.com:29914/the-nimble-sloth-dispatcher", username, password);
-            System.out.println(uriString);
             final MongoClientURI uri = new MongoClientURI(uriString);
             return new MongoClient(uri);
         } catch (Exception e) {
