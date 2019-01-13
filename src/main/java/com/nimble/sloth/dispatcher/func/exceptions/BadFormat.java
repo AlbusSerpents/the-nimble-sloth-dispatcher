@@ -2,9 +2,9 @@ package com.nimble.sloth.dispatcher.func.exceptions;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import static org.springframework.http.HttpStatus.BAD_GATEWAY;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@ResponseStatus(BAD_GATEWAY)
+@ResponseStatus(BAD_REQUEST)
 public class BadFormat extends CustomException {
 
     private static final String DESERIALIZE_MESSAGE = "Can't parse %s";
