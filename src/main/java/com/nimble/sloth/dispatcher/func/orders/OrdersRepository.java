@@ -13,5 +13,7 @@ public interface OrdersRepository {
 
     boolean markAsSentForPickup(final String orderId);
 
+    boolean markAsSentForDelivery(final String orderId);
+
     void removeByIds(final Collection<String> orderIds);
 }

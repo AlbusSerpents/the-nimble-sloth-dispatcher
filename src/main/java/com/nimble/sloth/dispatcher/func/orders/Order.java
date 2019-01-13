@@ -34,10 +34,13 @@ public class Order {
     @JsonIgnore
     private boolean sentForPickUp;
 
+    @JsonIgnore
+    private boolean sentForDelivery;
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    static class Location {
+    public static class Location {
         @NotNull
         private BigDecimal latitude;
         @NotNull
@@ -46,12 +49,12 @@ public class Order {
 
     @Data
     @AllArgsConstructor(access = PRIVATE)
-    static class Delivery {
+    public static class Delivery {
         private final String orderId;
         private final Location pickUp;
         private final Location destination;
 
-        static Delivery toWarehouse(
+        public static Delivery toWarehouse(
                 final Order order,
                 final Location warehouse) {
             final String orderId = order.getOrderId();
@@ -59,7 +62,7 @@ public class Order {
             return new Delivery(orderId, pickUp, warehouse);
         }
 
-        static Delivery fromWarehouse(
+        public static Delivery fromWarehouse(
                 final Order order,
                 final Location warehouse) {
             final String orderId = order.getOrderId();

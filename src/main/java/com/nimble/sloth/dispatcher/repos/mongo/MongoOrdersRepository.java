@@ -42,8 +42,19 @@ public class MongoOrdersRepository implements OrdersRepository {
 
     @Override
     public boolean markAsSentForPickup(final String orderId) {
+        return updateSentFlag(orderId, "sentForPickUp");
+    }
+
+    @Override
+    public boolean markAsSentForDelivery(final String orderId) {
+        return updateSentFlag(orderId, "sentForDelivery");
+    }
+
+    private boolean updateSentFlag(
+            final String orderId,
+            final String sentFlag) {
         final Query query = findByIdQuery(orderId);
-        final Update update = new Update().set("sentForPickUp", true);
+        final Update update = new Update().set(sentFlag, true);
         final Order result = template.findAndModify(query, update, Order.class);
 
         return ofNullable(result)
