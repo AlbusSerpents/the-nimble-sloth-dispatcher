@@ -19,7 +19,7 @@ public class QueueService {
         this.template = template;
     }
 
-    public QueueMessageResponse send(final QueueMessage queueMessage) {
+    public <T> QueueMessageResponse send(final T queueMessage) {
         try {
             final String message = mapper.writeValueAsString(queueMessage);
             System.out.println("Sending: " + message);
@@ -33,12 +33,13 @@ public class QueueService {
         }
     }
 
-    public QueueMessage receive() {
+    public String receive() {
         return ofNullable(template.receive())
                 .map(Message::getBody)
                 .map(String::new)
-                .map(this::deserialize)
-                .orElseGet(QueueMessage::emptyMessage);
+                .orElse(null);
+//                .map(this::deserialize)
+//                .orElseGet(QueueMessage::emptyMessage);
     }
 
     private QueueMessage deserialize(final String message) {

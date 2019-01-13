@@ -25,7 +25,7 @@ public class QueueTestEndpoint {
     }
 
     @RequestMapping(value = "/poll", method = GET)
-    public QueueMessage pollFromQueue() {
+    public String pollFromQueue() {
         return service.receive();
     }
 
