@@ -1,8 +1,11 @@
 package com.nimble.sloth.dispatcher.func.orders;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -12,9 +15,11 @@ import java.math.BigDecimal;
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
+@Document
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
+    @Id
     @NotBlank
     private String orderId;
 
@@ -26,10 +31,13 @@ public class Order {
     @NotNull
     private Location destination;
 
+    @JsonIgnore
+    private boolean sentForPickUp;
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Location {
+    static class Location {
         @NotNull
         private BigDecimal latitude;
         @NotNull
@@ -38,12 +46,12 @@ public class Order {
 
     @Data
     @AllArgsConstructor(access = PRIVATE)
-    public static class Delivery {
+    static class Delivery {
         private final String orderId;
         private final Location pickUp;
         private final Location destination;
 
-        public static Delivery toWarehouse(
+        static Delivery toWarehouse(
                 final Order order,
                 final Location warehouse) {
             final String orderId = order.getOrderId();
@@ -51,7 +59,7 @@ public class Order {
             return new Delivery(orderId, pickUp, warehouse);
         }
 
-        public static Delivery fromWarehouse(
+        static Delivery fromWarehouse(
                 final Order order,
                 final Location warehouse) {
             final String orderId = order.getOrderId();

@@ -25,7 +25,7 @@ public class OrdersEndpoint {
 
     @ResponseStatus(CREATED)
     @RequestMapping(value = "/add", method = POST)
-    public OrderAcceptedResponse createOrder(final @RequestBody @Valid Order order) {
-        return service.addOrder(order);
+    public OrderAcceptedResponse addOrder(final @RequestBody @Valid Order order) {
+        return service.create(order);
     }
 }
