@@ -32,14 +32,20 @@ public class DeliveriesDispatcher {
         allDeliveries.addAll(to);
         allDeliveries.addAll(from);
 
-        final boolean success = coordinator
-                .groupDeliveries(allDeliveries)
-                .parallelStream()
-                .map(queueService::send)
-                .allMatch(QueueMessageResponse::isSuccess);
+        if (allDeliveries.isEmpty()) {
+            return false;
+        } else {
+            final boolean success = coordinator
+                    .groupDeliveries(allDeliveries)
+                    .parallelStream()
+                    .filter(a -> !a.isEmpty())
+                    .map(queueService::send)
+                    .allMatch(QueueMessageResponse::isSuccess);
 
-        final String message = String.format("Sending to with result %s", success);
-        log.info(message);
-        return success;
+            final String message = String.format("Sending to with result %s", success);
+            log.info(message);
+            return success;
+        }
+
     }
 }

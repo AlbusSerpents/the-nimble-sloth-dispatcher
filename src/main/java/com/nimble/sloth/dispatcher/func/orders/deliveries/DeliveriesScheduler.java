@@ -1,6 +1,5 @@
 package com.nimble.sloth.dispatcher.func.orders.deliveries;
 
-import com.nimble.sloth.dispatcher.func.exceptions.DeliveriesNotDispatched;
 import com.nimble.sloth.dispatcher.func.orders.OrderLocation;
 import com.nimble.sloth.dispatcher.func.orders.OrdersRepository;
 import com.nimble.sloth.dispatcher.func.properties.PropertiesService;
@@ -22,7 +21,7 @@ public class DeliveriesScheduler {
 
     private final Log log = getLog(DeliveriesScheduler.class);
 
-    private static final long TEN_MINUTES_IN_MILLIS = 10 * 60 * 1000;
+    private static final long ONE_MINUTES_IN_MILLIS = 60 * 1000;
 
     private final DeliveriesDispatcher dispatcher;
     private final DeliveriesCreator creator;
@@ -40,7 +39,7 @@ public class DeliveriesScheduler {
         this.repository = repository;
     }
 
-    @Scheduled(fixedDelay = TEN_MINUTES_IN_MILLIS)
+    @Scheduled(fixedDelay = ONE_MINUTES_IN_MILLIS)
     public void scheduleDeliveries() {
         final String startMessage = String.format("Starting deliveries schedule at %s", now());
         log.info(startMessage);
@@ -52,15 +51,15 @@ public class DeliveriesScheduler {
         final Set<String> toWarehouseIds = getOrderIds(toWarehouse);
         final Set<String> fromWarehouseIds = getOrderIds(fromWarehouse);
 
-        final boolean allDispatched = dispatcher.sendDeliveries(toWarehouse, fromWarehouse);
-        if (allDispatched) {
+        final boolean anythingSent = dispatcher.sendDeliveries(toWarehouse, fromWarehouse);
+        if (anythingSent) {
             toWarehouseIds.forEach(repository::markAsSentForPickup);
             fromWarehouseIds.forEach(repository::markAsSentForDelivery);
 
             final String endMessage = String.format("Ending deliveries dispatching at %s", now());
             log.info(endMessage);
         } else {
-            throw new DeliveriesNotDispatched();
+            log.info("Nothing dispatched");
         }
     }
 
