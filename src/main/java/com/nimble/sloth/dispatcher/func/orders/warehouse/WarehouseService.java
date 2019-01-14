@@ -33,6 +33,7 @@ public class WarehouseService {
             final String warehouseToken = getProperty(WAREHOUSE_TOKEN);
             return client.getWarehouseContents(warehouseUrl, warehouseToken);
         } catch (Exception e) {
+            log.error("Warehouse communication failed");
             log.error(e);
             return emptyList();
         }

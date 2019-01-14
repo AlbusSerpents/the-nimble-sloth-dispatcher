@@ -10,24 +10,29 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
 import static org.springframework.http.HttpMethod.GET;
 
 @Component
 public class WarehouseClient {
 
-    private static final String RELATIVE_URL = "оrders";
+    private static final String RELATIVE_URL = "orders";
     private static final String AUTHENTICATION_HEADER = "X-Auth-Token";
 
     private final RestTemplate template = new RestTemplate();
 
     public List<String> getWarehouseContents(
-            final String baseUrl, final String token) {
+            final String baseUrl,
+            final String token) {
         final String url = String.format("%s/%s", baseUrl, RELATIVE_URL);
         final HttpEntity<Object> entity = authenticationEntity(token);
-        final ResponseEntity<String[]> response = template.exchange(url, GET, entity, String[].class);
-        final String[] ids = extractBody(response);
-        return asList(ids);
+        final ResponseEntity<WarehouseResponse[]> response = template.exchange(url, GET, entity, WarehouseResponse[].class);
+        final WarehouseResponse[] ids = extractBody(response);
+
+        return of(ids)
+                .map(WarehouseResponse::get_id)
+                .collect(toList());
     }
 
     private HttpEntity<Object> authenticationEntity(final String token) {
@@ -36,7 +41,7 @@ public class WarehouseClient {
         return new HttpEntity<>(null, headers);
     }
 
-    private String[] extractBody(final ResponseEntity<String[]> entity) {
+    private WarehouseResponse[] extractBody(final ResponseEntity<WarehouseResponse[]> entity) {
         final HttpStatus code = entity.getStatusCode();
         if (!code.is2xxSuccessful()) {
             throw new CommunicationFailed("Couldn't access the warehouse");
