@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -29,14 +28,14 @@ public class MongoOrdersRepository implements OrdersRepository {
     }
 
     @Override
-    public Optional<Order> findById(final String orderId) {
-        final Order order = template.findById(orderId, Order.class);
-        return ofNullable(order);
+    public Collection<Order> findWaitingForPickUp() {
+        final Query query = new Query(where("sentForPickUp").is(false));
+        return template.find(query, Order.class);
     }
 
     @Override
     public Collection<Order> findByIds(final Collection<String> orderIds) {
-        final Query query = findAllInIds(orderIds);
+        final Query query = new Query(where("orderId").in(orderIds));
         return template.find(query, Order.class);
     }
 
@@ -53,25 +52,12 @@ public class MongoOrdersRepository implements OrdersRepository {
     private boolean updateSentFlag(
             final String orderId,
             final String sentFlag) {
-        final Query query = findByIdQuery(orderId);
+        final Query query = new Query(where("orderId").in(orderId));
         final Update update = new Update().set(sentFlag, true);
         final Order result = template.findAndModify(query, update, Order.class);
 
         return ofNullable(result)
                 .map(Order::isSentForPickUp)
                 .orElse(false);
-    }
-
-    private Query findByIdQuery(final String orderId) {
-        return new Query(where("orderId").in(orderId));
-    }
-
-    private Query findAllInIds(final Collection<String> orderIds) {
-        return new Query(where("orderId").in(orderIds));
-    }
-
-    @Override
-    public void removeByIds(final Collection<String> orderIds) {
-        template.findAllAndRemove(findAllInIds(orderIds), Order.class);
     }
 }
