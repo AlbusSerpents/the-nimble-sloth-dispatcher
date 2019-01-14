@@ -20,6 +20,8 @@ public class Order {
     @NotBlank
     private String orderId;
 
+    private String userId;
+
     @Valid
     @NotNull
     private OrderLocation pickUp;
