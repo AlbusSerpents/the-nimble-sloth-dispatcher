@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.nimble.sloth.dispatcher.func.properties.PropertiesKey.WAREHOUSE_LATITUDE;
+import static com.nimble.sloth.dispatcher.func.properties.PropertiesKey.WAREHOUSE_LONGITUDE;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.logging.LogFactory.getLog;
@@ -65,7 +66,7 @@ public class DeliveriesScheduler {
 
     private OrderLocation warehouseLocation() {
         final String warehouseLatitude = propertiesService.getRequiredProperty(WAREHOUSE_LATITUDE);
-        final String warehouseLongitude = propertiesService.getRequiredProperty(WAREHOUSE_LATITUDE);
+        final String warehouseLongitude = propertiesService.getRequiredProperty(WAREHOUSE_LONGITUDE);
 
         final BigDecimal latitude = new BigDecimal(warehouseLatitude);
         final BigDecimal longitude = new BigDecimal(warehouseLongitude);
