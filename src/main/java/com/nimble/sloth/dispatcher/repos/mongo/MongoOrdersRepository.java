@@ -35,7 +35,7 @@ public class MongoOrdersRepository implements OrdersRepository {
 
     @Override
     public Collection<Order> findByIds(final Collection<String> orderIds) {
-        final Query query = new Query(where("orderId").in(orderIds));
+        final Query query = new Query(where("orderId").in(orderIds).and("sentForDelivery").is(false));
         return template.find(query, Order.class);
     }
 
