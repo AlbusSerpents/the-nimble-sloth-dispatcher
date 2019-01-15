@@ -31,7 +31,7 @@ public class WarehouseClient {
         final WarehouseResponse[] ids = extractBody(response);
 
         return of(ids)
-                .map(WarehouseResponse::get_id)
+                .map(WarehouseResponse::getId)
                 .collect(toList());
     }
 
